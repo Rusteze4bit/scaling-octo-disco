@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en" dir="auto">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/deriv-logo.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+        <!-- Performance Optimizations -->
+        <link rel="preconnect" href="https://api.deriv.com" />
+        <link rel="dns-prefetch" href="https://api.deriv.com" />
+        <link rel="preconnect" href="https://cdn.deriv.com" />
+        <link rel="dns-prefetch" href="https://cdn.deriv.com" />
+
+        <!-- PWA Manifest -->
+        <link rel="manifest" href="/manifest.json" />
+
+        <!-- PWA Meta Tags -->
+        <meta name="theme-color" content="#ff444f" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="Deriv Bot" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="msapplication-TileColor" content="#ff444f" />
+        <meta name="msapplication-tap-highlight" content="no" />
+
+        <!-- Apple Touch Icons -->
+        <link rel="apple-touch-icon" href="/assets/icons/pwa/icon-152x152.png" />
+        <link rel="apple-touch-icon" sizes="152x152" href="/assets/icons/pwa/icon-152x152.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/pwa/icon-192x192.png" />
+        <meta name="title" content="Build a trading bot without coding | Deriv Bot." />
+        <meta
+            name="description"
+            content="Import your current bot or learn how to create a trading bot from scratch with our detailed guides, FAQs, and tutorials. Start with a quick strategy!"
+        />
+        <meta property="og:title" content="Aoutomated trading bot" />
+        <meta
+            property="og:description"
+            content="Import your current bot or learn how to create a trading bot from scratch with our detailed guides, FAQs, and tutorials. Start with a quick strategy!"
+        />
+        <title>Your ultimate trading bot.</title>
+        <style>
+            :root {
+                font-size: 62.5%;
+            }
+            
+            /* Instant dark background to prevent white flash */
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+                background: #181818;
+                color: #ffffff;
+            }
+            
+            /* Instant loading indicator before React loads */
+            #root:empty::before {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: #181818;
+                z-index: 99999;
+            }
+            
+            #root:empty::after {
+                content: '';
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                width: 60px;
+                height: 60px;
+                margin: -30px 0 0 -30px;
+                border: 4px solid rgba(255, 68, 79, 0.1);
+                border-top-color: #ff444f;
+                border-radius: 50%;
+                animation: instant-spin 0.8s linear infinite;
+                z-index: 100000;
+            }
+            
+            @keyframes instant-spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+        </style>
+    </head>
+
+    <body class="body theme theme--light">
+        <div id="modal_root" class="modal-root"></div>
+        <div id="popup_root" class="popup-root"></div>
+        <div id="root"></div>
+        <!-- LiveChat script -->
+        <script type="text/javascript" defer>
+            window.__lc = window.__lc || {};
+            window.__lc.license = 12049137;
+            window.__lc.asyncInit = true;
+            (function (n, t, c) {
+                function i(n) {
+                    return e._h ? e._h.apply(null, n) : e._q.push(n);
+                }
+                var e = {
+                    _q: [],
+                    _h: null,
+                    _v: '2.0',
+                    on: function () {
+                        i(['on', c.call(arguments)]);
+                    },
+                    once: function () {
+                        i(['once', c.call(arguments)]);
+                    },
+                    off: function () {
+                        i(['off', c.call(arguments)]);
+                    },
+                    get: function () {
+                        if (!e._h) throw new Error('[LiveChatWidget] You can’t use getters before load.');
+                        return i(['get', c.call(arguments)]);
+                    },
+                    call: function () {
+                        i(['call', c.call(arguments)]);
+                    },
+                    init: function () {
+                        setTimeout(() => {
+                            var n = t.createElement('script');
+                            ((n.async = !0),
+                                (n.type = 'text/javascript'),
+                                (n.src = 'https://cdn.livechatinc.com/tracking.js'),
+                                t.head.appendChild(n));
+                        }, 3000);
+                    },
+                };
+                (!n.__lc.asyncInit && e.init(), (n.LiveChatWidget = n.LiveChatWidget || e));
+            })(window, document, [].slice);
+        </script>
+        <!-- End LiveChat script -->
+
+        <!-- Browser Service Worker Prevention -->
+        <script>
+            // Check browser compatibility and prevent service worker issues
+            const userAgent = navigator.userAgent.toLowerCase();
+            const isFirefox = userAgent.includes('firefox');
+            const isSafari = userAgent.includes('safari') && !userAgent.includes('chrome');
+            const shouldSkipSW = isFirefox || isSafari;
+
+            if (shouldSkipSW) {
+                const browserName = isFirefox ? 'Firefox' : 'Safari';
+                console.log(
+                    `[HTML] ${browserName} detected - preventing service worker registration to avoid chunk loading issues`
+                );
+
+                // Cleanup any existing service workers
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker
+                        .getRegistrations()
+                        .then(registrations => {
+                            registrations.forEach(registration => {
+                                console.log(`[HTML] Unregistering existing SW for ${browserName}:`, registration.scope);
+                                registration.unregister();
+                            });
+                        })
+                        .catch(error => {
+                            console.error('[HTML] Failed to cleanup service workers:', error);
+                        });
+                }
+            }
+
+            // Check online/offline status
+            console.log('[HTML] Online status:', navigator.onLine);
+            window.addEventListener('online', () => {
+                console.log('[HTML] Back online');
+            });
+            window.addEventListener('offline', () => {
+                console.log('[HTML] Gone offline');
+            });
+
+            // Listen for service worker messages if registered by PWA utils (non-problematic browsers only)
+            if ('serviceWorker' in navigator && !shouldSkipSW) {
+                navigator.serviceWorker.addEventListener('message', event => {
+                    console.log('[HTML] Message from service worker:', event.data);
+                });
+            }
+        </script>
+    </body>
+</html>
